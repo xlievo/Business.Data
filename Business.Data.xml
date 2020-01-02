@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Business.Data</name>
+    </assembly>
+    <members>
+        <member name="T:LinqToDB.LinqToDBConnection">
+            <summary>
+            the a LinqToDBConnection
+            </summary>
+        </member>
+        <member name="P:LinqToDB.ConnectionStringSettings.Name">
+            <summary>
+            Key
+            </summary>
+        </member>
+        <member name="P:LinqToDB.ConnectionStringSettings.ProviderName">
+            <summary>
+            LinqToDB.ProviderName
+            </summary>
+        </member>
+        <member name="T:LinqToDB.LinqToDBSection">
+            <summary>
+            T4: NamespaceName = "DataModels"; DataContextName = "Model"; BaseDataContextClass = "LinqToDB.Entitys"; PluralizeDataContextPropertyNames = false;
+            </summary>
+        </member>
+        <member name="M:LinqToDB.LinqToDBSection.#ctor(System.Collections.Generic.IEnumerable{LinqToDB.ConnectionStringSettings},System.String)">
+            <summary>
+            NamespaceName = "DataModels"; DataContextName = "Model"; BaseDataContextClass = "LinqToDB.Entitys"; PluralizeDataContextPropertyNames = false;
+            </summary>
+            <param name="connectionStringSettings"></param>
+            <param name="defaultConfiguration"></param>
+        </member>
+        <member name="P:LinqToDB.LinqToDBSection.DefaultConfiguration">
+            <summary>
+            Key
+            </summary>
+        </member>
+        <member name="P:LinqToDB.LinqToDBSection.DefaultDataProvider">
+            <summary>
+            LinqToDB.ProviderName
+            </summary>
+        </member>
+    </members>
+</doc>
