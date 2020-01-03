@@ -8,36 +8,33 @@
     <Description>https://github.com/xlievo/Business.Data</Description>
     <Copyright></Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageIcon>icon.png</PackageIcon>
+    <PackageIcon></PackageIcon>
     <PackageIconUrl />
     <PackageProjectUrl>https://github.com/xlievo/Business.Data</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\Business.Data\Business.Data\Business.Data.xml</DocumentationFile>
+    <DocumentationFile>Business.Data.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>D:\Source\Repos\Business.Data\Business.Data\Business.Data.xml</DocumentationFile>
+    <DocumentationFile>Business.Data.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Business.Data.xml" />
     <None Remove="readme.txt" />
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Data" Version="4.1.0" />
     <PackageReference Include="linq2db" Version="2.9.5" />
     <PackageReference Include="Npgsql" Version="4.1.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="C:\Users\xliev\Pictures\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
   </ItemGroup>
 
 </Project>
