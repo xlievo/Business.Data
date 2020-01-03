@@ -5,4 +5,5 @@
 /.vs
 /Business.Data/bin
 /Business.Data/obj
+*.user
 *.nupkg
