@@ -17,8 +17,8 @@
 
 namespace LinqToDB
 {
-    using System.Linq;
     using Business.Data;
+    using System.Linq;
     using LinqToDB.DataProvider;
 
     /// <summary>
