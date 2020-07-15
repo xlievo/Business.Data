@@ -1,7 +1,7 @@
 # Business.Data
 A C # wrapper class library, contains a generic ORM simple packaging. No excessive packaging as possible, restore the essence
 
-Install-Package Business.AspNet
+Install-Package Business.AspNet //Optional, but you must read the configuration file yourself  
 Install-Package linq2db.PostgreSQL //Select the database package you need to install
 
 	a:=====================lin2db.T4.tt=====================
