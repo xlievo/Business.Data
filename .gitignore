@@ -7,3 +7,5 @@
 /Business.Data/obj
 *.user
 *.nupkg
+/test/obj
+/test/bin/Debug/netcoreapp3.1

@@ -24,8 +24,7 @@ namespace LinqToDB
     /// <summary>
     /// the a LinqToDBConnection
     /// </summary>
-    public class LinqToDBConnection : Data.DataConnection, IConnection//, IEntitys
-                                                                      //where IEntity : class, Business.Data.IEntity
+    public class LinqToDBConnection : Data.DataConnection, IConnection
     {
         static int ForEach<T>(System.Collections.Generic.IEnumerable<T> obj, System.Func<T, int> func)
         {
@@ -127,46 +126,14 @@ namespace LinqToDB
             Data.DataConnectionExtensions.BulkCopy(this, source);
         }
 
-        public new void Dispose()
-        {
-            DisposeCommand();
-            base.Dispose();
-            Transaction?.Dispose();
-            Connection?.Dispose();
-        }
+        //public new void Dispose()
+        //{
+        //    DisposeCommand();
+        //    base.Dispose();
+        //    Transaction?.Dispose();
+        //    Connection?.Dispose();
+        //}
     }
-
-    /*
-    public partial class LinqToDBConnection : LinqToDBConnectionBase<Entitys>
-    {
-        static LinqToDBConnection()
-        {
-            LinqToDB.Data.DataConnection.TurnTraceSwitchOn();
-            LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
-        }
-
-        readonly Entitys entitys;
-
-        public LinqToDBConnection() => this.entitys = new Entitys(this);
-
-        public LinqToDBConnection(string configuration) : base(configuration) => this.entitys = new Entitys(this);
-
-        public LinqToDBConnection(string providerName, string connectionString) : base(providerName, connectionString) => this.entitys = new Entitys(this);
-
-        public LinqToDBConnection(IDataProvider provider, string conString) : base(provider, conString) => this.entitys = new Entitys(this);
-
-        public override Entitys Entity => entitys;
-    }
-
-    public partial class Entitys : IEntity
-    {
-        readonly LinqToDB.Data.DataConnection con;
-
-        public Entitys(LinqToDB.Data.DataConnection con) { this.con = con; }
-
-        public virtual System.Linq.IQueryable<T> Get<T>() where T : class, new() => this.con.GetTable<T>();
-    }
-    */
 
     #region Settings
 
@@ -225,21 +192,3 @@ namespace LinqToDB
 
     #endregion
 }
-
-//namespace LinqToDB
-//{
-//    //public class Data2<IConnection> : Business.Data.DataBase<Business.Data.IConnection>
-//    //    where IConnection : class, Business.Data.IConnection
-//    //{
-//    //    public override Business.Data.IConnection GetConnection([CallerMemberName] string callMethod = null)
-//    //    {
-//    //        throw new System.NotImplementedException();
-//    //    }
-//    //}
-
-//    //public class DataConnection : Business.Data.LinqToDBConnection<DataModels.Model>
-//    //{
-//    //    public DataConnection(string configuration) : base(configuration) { }
-//    //    public override DataModels.Model Entity { get => new DataModels.Model(this.ConfigurationString); }
-//    //}
-//}

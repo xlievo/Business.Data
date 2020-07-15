@@ -1,6 +1,9 @@
 # Business.Data
 A C # wrapper class library, contains a generic ORM simple packaging. No excessive packaging as possible, restore the essence
 
+Install-Package Business.AspNet
+Install-Package linq2db.PostgreSQL //Select the database package you need to install
+
 	a:=====================lin2db.T4.tt=====================
 	
 	NamespaceName = "DataModel";
@@ -21,11 +24,12 @@ A C # wrapper class library, contains a generic ORM simple packaging. No excessi
 		}
 	}
 	
-	c:=====================Startup(IConfiguration configuration)=====================
-	
-	LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDB.LinqToDBSection(Configuration.GetSection("AppSettings").GetSection("ConnectionStrings").GetChildren().Select(c => new LinqToDB.ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
-	
-	d:=====================Definition=====================
+	c:=====================Definition=====================
+
+    using System.Linq;
+    using Microsoft.Extensions.Configuration;
+    using Business.Core.Utils;
+    using Business.AspNet;
 
 	public class DataBase : Business.Data.DataBase<DataModel.Connection>
     {
@@ -36,7 +40,7 @@ A C # wrapper class library, contains a generic ORM simple packaging. No excessi
         static DataBase()
         {
             //Initialize the database
-            LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDB.LinqToDBSection(Common.Host.AppSettings.GetSection("ConnectionStrings").GetChildren().Select(c => new LinqToDB.ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
+            LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDB.LinqToDBSection(Utils.Hosting.Config.GetSection("AppSettings").GetSection("ConnectionStrings").GetChildren().Select(c => new LinqToDB.ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
 
             LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
             LinqToDB.Data.DataConnection.TurnTraceSwitchOn();
