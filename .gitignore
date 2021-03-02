@@ -9,3 +9,4 @@
 *.nupkg
 /test/obj
 /test/bin/Debug/netcoreapp3.1
+/test/bin/Release/netcoreapp3.1

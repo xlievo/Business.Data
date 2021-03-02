@@ -20,7 +20,7 @@ namespace test
                 Console.WriteLine(log.ToString());
             });
         }
-        
+
         /// <summary>
         /// MyLogicArg!
         /// </summary>
@@ -43,6 +43,15 @@ namespace test
         {
             using var con = DataBase.DB.GetConnection();
             var dd = await con.dd.ToListAsync();
+
+            var data = new DataModel.dd { dd2 = "ssss" };
+
+            var list = new List<DataModel.dd>();
+
+            list.Add(data);
+
+            con.BulkCopy(list);
+
             return this.ResultCreate(dd);
         }
     }

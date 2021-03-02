@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Business.AspNet" Version="0.7.0" />
-    <PackageReference Include="linq2db.PostgreSQL" Version="3.0.1" />
+    <PackageReference Include="Business.AspNet" Version="0.9.3" />
+    <PackageReference Include="linq2db.PostgreSQL" Version="3.2.3" />
   </ItemGroup>
 
   <ItemGroup>
