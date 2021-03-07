@@ -14,7 +14,7 @@ public class DataBase : Business.Data.DataBase<DataModel.Connection>
         //Initialize the database
         LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDB.LinqToDBSection(Utils.Hosting.Config.GetSection("AppSettings").GetSection("ConnectionStrings").GetChildren().Select(c => new LinqToDB.ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
 
-        LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
+        //LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
         LinqToDB.Data.DataConnection.TurnTraceSwitchOn();
         LinqToDB.Data.DataConnection.OnTrace = c =>
         {
@@ -22,14 +22,14 @@ public class DataBase : Business.Data.DataBase<DataModel.Connection>
             {
                 if (c.TraceInfoStep == LinqToDB.Data.TraceInfoStep.Error)
                 {
-                    c.Exception?.Console();
+                    c.Exception?.Log();
                 }
                 return;
             }
 
             var con = c.DataConnection as LinqToDB.LinqToDBConnection;
 
-            System.Console.WriteLine($"{c.StartTime}{con?.TraceMethod}:{con?.TraceId}{System.Environment.NewLine}{c.SqlText}{System.Environment.NewLine}{c.ExecutionTime}");
+            $"{c.StartTime}{con?.TraceMethod}:{con?.TraceId}{System.Environment.NewLine}{c.SqlText}{System.Environment.NewLine}{c.ExecutionTime}".Log();
         };
     }
 

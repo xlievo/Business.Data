@@ -15,8 +15,11 @@
           ##############
 ==================================*/
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using LinqToDB;
 
 namespace Business.Data
 {
@@ -63,60 +66,8 @@ namespace Business.Data
     }
     */
 
-    #region Paging Object
-
-    public interface IPaging
-    {
-        dynamic Data { get; set; }
-
-        int Length { get; set; }
-
-        int CurrentPage { get; set; }
-
-        int Count { get; set; }
-
-        int CountPage { get; set; }
-    }
-
-    public struct Paging<T> : IPaging
-    {
-        //public static implicit operator Paging<T>(string value) => Help.TryJsonDeserialize<Paging<T>>(value);
-
-        //public static implicit operator Paging<T>(byte[] value) => Help.TryBinaryDeserialize<Paging<T>>(value);
-
-        public System.Collections.Generic.List<T> Data { get; set; }
-
-        public int Length { get; set; }
-
-        public int CurrentPage { get; set; }
-
-        public int Count { get; set; }
-
-        public int CountPage { get; set; }
-
-        dynamic IPaging.Data { get => Data; set => Data = value; }
-
-        //public override string ToString() => Newtonsoft.Json.JsonConvert.SerializeObject(this);
-
-        //public byte[] ToBytes() => Help.BinarySerialize(this);
-    }
-
-    public struct PagingInfo
-    {
-        public int Skip;
-        public int Take;
-        public int CurrentPage;
-        public int CountPage;
-    }
-
-    public enum Order
-    {
-        Ascending = 1,
-        Descending = 2
-    }
-
-    #endregion
-
+    
+    /*
     public struct DataParameter
     {
         public DataParameter(string name, object value) { this.Name = name; this.Value = value; }
@@ -125,7 +76,7 @@ namespace Business.Data
 
         public object Value { get; private set; }
     }
-
+    */
     //[ProtoBuf.ProtoContract(SkipConstructor = true)]
     //public struct Paging<T>
     //{
@@ -161,277 +112,30 @@ namespace Business.Data
     //    }
     //}
 
-    public static class DataConnectionEx
-    {
-        public static System.Data.IDbCommand GetCommand(this IConnection connection, string commandText, System.Data.IDbTransaction t = null, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-        {
-            var cmd = connection.CreateCommand();
-            cmd.CommandType = commandType;
-            cmd.CommandText = commandText;
-
-            if (null != parameter)
-            {
-                foreach (var item in parameter)
-                {
-                    var p = cmd.CreateParameter();
-                    p.ParameterName = item.Name;
-                    //p.Value = System.DateTime.MinValue.Equals(item.Value) ? System.DBNull.Value : item.Value ?? System.DBNull.Value;
-                    p.Value = item.Value ?? System.DBNull.Value;
-                    cmd.Parameters.Add(p);
-                }
-            }
-
-            cmd.Transaction = t;
-            return cmd;
-        }
-
-        public static int ExecuteNonQuery(this IConnection connection, string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-        {
-            return connection.ExecutePack(() =>
-            {
-                using (var cmd = connection.GetCommand(commandText, connection.Transaction, commandType, parameter))
-                {
-                    return cmd.ExecuteNonQuery();
-                }
-            });
-        }
-
-        public static Result ExecuteScalar<Result>(this IConnection connection, string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-        {
-            return connection.ExecutePack(() =>
-            {
-                using (var cmd = connection.GetCommand(commandText, connection.Transaction, commandType, parameter))
-                {
-                    return (Result)cmd.ExecuteScalar();
-                }
-            }, minusOneExcep: false);
-        }
-        /*
-        public static System.Collections.Generic.IList<TEntity> Execute<TEntity>(this IConnection connection, string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-        {
-            return connection.ExecutePack<System.Collections.Generic.IList<TEntity>>(() =>
-            {
-                using (var cmd = connection.GetCommand(commandText, connection.Transaction, commandType, parameter))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        return new Utils.LightDataAccess.DataReaderToObjectMapper<TEntity>().ReadCollection(reader).ToList();
-                    }
-                }
-            }, minusOneExcep: false);
-        }
-
-       public static TEntity ExecuteSingle<TEntity>(this IConnection connection, string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-       {
-           return connection.ExecutePack<TEntity>(() =>
-           {
-               using (var cmd = connection.GetCommand(commandText, connection.Transaction, commandType, parameter))
-               {
-                   using (var reader = cmd.ExecuteReader())
-                   {
-                       return new Utils.LightDataAccess.DataReaderToObjectMapper<TEntity>().ReadSingle(reader);
-                   }
-               }
-           }, minusOneExcep: false);
-       }
-        */
-
-        public static System.Collections.Generic.IList<TEntity> Execute<TEntity>(this IConnection connection, string commandText, System.Data.CommandType commandType = System.Data.CommandType.Text, params DataParameter[] parameter)
-        {
-            return connection.ExecutePack(() =>
-            {
-                using (var cmd = connection.GetCommand(commandText, connection.Transaction, commandType, parameter))
-                {
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        return reader.ToEntity<TEntity>();
-                    }
-                }
-            }, minusOneExcep: false);
-        }
-
-        public static System.Collections.Generic.IList<TEntity> ToEntity<TEntity>(this System.Data.IDataReader reader) => new AutoMapper.MapperConfiguration(cfg =>
-        {
-            AutoMapper.Data.ConfigurationExtensions.AddDataReaderMapping(cfg);
-            cfg.CreateMap<System.Data.IDataReader, TEntity>();
-        }).CreateMapper().Map<System.Collections.Generic.IList<TEntity>>(reader);
-
-        internal static Result ExecutePack<Result>(this IConnection connection, System.Func<Result> func, bool minusOneExcep = true)
-        {
-            bool isCreateTransaction = false;
-            if (null == connection.Transaction) { connection.BeginTransaction(); isCreateTransaction = !isCreateTransaction; }
-
-            try
-            {
-                var result = func();
-
-                if (minusOneExcep && (typeof(Result).Equals(typeof(int)) || typeof(Result).Equals(typeof(long))))
-                {
-                    //var count = System.Convert.ToInt32(result);
-                    if (Equals(-1, result))
-                    {
-                        connection.Rollback();
-                        throw new System.Exception("Affected the number of records -1");
-                    }
-                }
-
-                if (isCreateTransaction) { connection.Commit(); }
-                return result;
-            }
-            catch (System.Exception ex) { if (null != connection.Transaction) { connection.Rollback(); } throw ex; }
-            finally { if (isCreateTransaction && null != connection.Transaction) { connection.Transaction.Dispose(); } }
-        }
-
-        //public static Paging<T> GetPaging<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 30)
-        //{
-        //    var count = query.Count();
-        //    if (0 == count) { return new Paging<T> { Data = new System.Collections.Generic.List<T>() }; }
-
-        //    var p = Help2.GetPaging(count, currentPage, pageSize, pageSizeMax);
-
-        //    var data = query.Skip(p.Skip).Take(p.Take).ToList();
-
-        //    return new Paging<T> { Data = data, DataLength = data.Count, CurrentPage = p.CurrentPage, Count = count, CountPage = p.CountPage };
-        //    //var _pageSize = System.Math.Min(pageSize, pageSizeMax);
-
-        //    //var countPage = System.Convert.ToInt32(System.Math.Ceiling(System.Convert.ToDouble(count) / System.Convert.ToDouble(_pageSize)));
-
-        //    //currentPage = currentPage < 0 ? 0 : currentPage > countPage ? countPage : currentPage;
-        //    //if (currentPage <= 0 && countPage > 0) { currentPage = 1; }
-
-        //    //return new Paging<T> { Data = query.Skip(_pageSize * (currentPage - 1)).Take(_pageSize).ToList(), CurrentPage = currentPage, Count = count };
-        //}
-
-        //public static Help2.Paging<T> ToPaging<T>(this System.Collections.Generic.List<T> data, int currentPage, int count)
-        //{
-        //    return new Help2.Paging<T> { Data = data, CurrentPage = currentPage, Count = count };
-        //}
-
-        static int Random(int maxValue)
-        {
-            using (var rng = new System.Security.Cryptography.RNGCryptoServiceProvider())
-            {
-                var bytes = new byte[4];
-                rng.GetBytes(bytes);
-                return new System.Random(System.BitConverter.ToInt32(bytes, 0)).Next(maxValue);
-            }
-        }
-
-        public static IQueryable<T> SkipRandom<T>(this IQueryable<T> query, int take = 0)
-        {
-            if (0 < take)
-            {
-                query = query.Skip(Random(query.Count() - take)).Take(take);
-            }
-            else
-            {
-                query = query.Skip(Random(query.Count()));
-            }
-            return query;
-        }
-
-        public static int InsertOrUpdate<T>(this IQueryable<T> target, System.Linq.Expressions.Expression<System.Func<T>> insertSetter, System.Linq.Expressions.Expression<System.Func<T, T>> onDuplicateKeyUpdateSetter, System.Linq.Expressions.Expression<System.Func<T>> keySelector) where T : class => LinqToDB.LinqExtensions.InsertOrUpdate(target as LinqToDB.ITable<T>, insertSetter, onDuplicateKeyUpdateSetter, keySelector);
-
-        public static int InsertOrUpdate<T>(this IQueryable<T> target, System.Linq.Expressions.Expression<System.Func<T>> insertSetter, System.Linq.Expressions.Expression<System.Func<T>> keySelector) where T : class, new() => InsertOrUpdate(target as LinqToDB.ITable<T>, insertSetter, c => new T { }, keySelector);
-
-        public static LinqToDB.ITable<T> AsTable<T>(this IQueryable<T> queryable) => queryable as LinqToDB.ITable<T>;
-
-        #region Paging
-
-        public static PagingInfo GetPaging(int count, int currentPage, int pageSize, int pageSizeMax = 50)
-        {
-            if (0 == count) { return default; }
-
-            var _pageSize = System.Math.Min(pageSize, pageSizeMax);
-            var _countPage = System.Convert.ToDouble(count) / System.Convert.ToDouble(_pageSize);
-            var countPage = (double.IsNaN(_countPage) || double.IsPositiveInfinity(_countPage) || double.IsNegativeInfinity(_countPage)) ? 1 : System.Convert.ToInt32(System.Math.Ceiling(_countPage));
-
-            currentPage = currentPage < 0 ? 0 : currentPage > countPage ? countPage : currentPage;
-            if (currentPage <= 0 && countPage > 0) { currentPage = 1; }
-
-            return new PagingInfo { Skip = _pageSize * (currentPage - 1), Take = _pageSize, CurrentPage = currentPage, CountPage = countPage };
-        }
-
-        public static Paging<T> GetPaging<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50)
-        {
-            if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
-
-            var count = query.Count();
-            if (0 == count) { return new Paging<T> { Data = new System.Collections.Generic.List<T>() }; }
-
-            var p = GetPaging(count, currentPage, pageSize, pageSizeMax);
-
-            var data = query.Skip(p.Skip).Take(p.Take).ToList();
-
-            return new Paging<T> { Data = data, Length = data.Count, CurrentPage = p.CurrentPage, Count = count, CountPage = p.CountPage };
-        }
-
-        public static Paging<T> GetPagingOrderBy<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50)
-        {
-            if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
-
-            var count = query.Count();
-            if (0 == count) { return new Paging<T> { Data = new System.Collections.Generic.List<T>() }; }
-
-            var p = GetPaging(count, currentPage, pageSize, pageSizeMax);
-
-            System.Collections.Generic.List<T> data = null;
-
-            switch (order)
-            {
-                case Order.Ascending:
-                    data = query.Skip(p.Skip).Take(p.Take).OrderBy(keySelector).ToList();
-                    break;
-                case Order.Descending:
-                    data = query.Skip(p.Skip).Take(p.Take).OrderByDescending(keySelector).ToList();
-                    break;
-            }
-
-            return new Paging<T> { Data = data, Length = data.Count, CurrentPage = p.CurrentPage, Count = count, CountPage = p.CountPage };
-        }
-
-        public static Paging<T> ToPaging<T>(this System.Collections.Generic.List<T> data, int currentPage = 0, int count = 0, int countPage = 0)
-        {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            return new Paging<T> { Data = data, Length = data.Count, CurrentPage = currentPage, Count = count, CountPage = countPage };
-        }
-
-        public static Paging<T> ToPaging<T>(this System.Collections.Generic.List<T> data, IPaging pagingObj)
-        {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            return new Paging<T> { Data = data, Length = data.Count, CurrentPage = pagingObj.CurrentPage, Count = pagingObj.Count, CountPage = pagingObj.CountPage };
-        }
-
-        public static Paging<T> ToPaging<T>(this System.Collections.Generic.IEnumerable<T> data, int currentPage = 0, int count = 0, int countPage = 0)
-        {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            var data2 = data.ToList();
-            return new Paging<T> { Data = data2, Length = data2.Count, CurrentPage = currentPage, Count = count, CountPage = countPage };
-        }
-
-        public static Paging<T> ToPaging<T>(this System.Collections.Generic.IEnumerable<T> data, IPaging pagingObj)
-        {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            var data2 = data.ToList();
-            return new Paging<T> { Data = data2.ToList(), Length = data2.Count, CurrentPage = pagingObj.CurrentPage, Count = pagingObj.Count, CountPage = pagingObj.CountPage };
-        }
-
-        #endregion
-    }
-
-    public abstract class DataBase<IConnection> : IData
-        where IConnection : class, Data.IConnection
+    /// <summary>
+    /// DataBase
+    /// </summary>
+    /// <typeparam name="Connection"></typeparam>
+    public abstract class DataBase<Connection> : IData
+        where Connection : LinqToDBConnection
     {
         static DataBase() => LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
 
-        public abstract IConnection GetConnection([CallerMemberName] string callMethod = null);
+        /// <summary>
+        /// GetConnection
+        /// </summary>
+        /// <param name="callMethod"></param>
+        /// <returns></returns>
+        public abstract Connection GetConnection([CallerMemberName] string callMethod = null);
 
-        Data.IConnection IData.GetConnection([CallerMemberName] string callMethod = null) => GetConnection(callMethod);
+        /// <summary>
+        /// GetConnection
+        /// </summary>
+        /// <param name="callMethod"></param>
+        /// <returns></returns>
+        LinqToDBConnection IData.GetConnection([CallerMemberName] string callMethod = null) => GetConnection(callMethod);
 
+        /*
         static Result UseConnection<Result>(System.Func<string, Data.IConnection> getConnection, System.Func<Data.IConnection, Result> func, string callMethod)
         {
             using (var con = getConnection(callMethod)) { return func(con); }
@@ -516,6 +220,7 @@ namespace Business.Data
         {
             return UseConnection(GetConnection, con => con.ExecuteScalar<Result>(commandText, commandType, parameter), callMethod);
         }
+        */
     }
 
     //public class DB<IConnection> : DataBase<IConnection>

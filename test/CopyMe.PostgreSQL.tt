@@ -1,9 +1,8 @@
-<#@ template language="C#" debug="True" hostSpecific="True"                            #>
-<#@ output extension=".generated.cs"                                                   #>
-<#@ include file="$(LinqToDBT4PostgreSQLTemplatesDirectory)LinqToDB.PostgreSQL.Tools.ttinclude" #>
-<#@ include file="$(LinqToDBT4PostgreSQLTemplatesDirectory)PluralizationService.ttinclude"      #>
-<# //@ include file="$(ProjectDir)LinqToDB.Templates\LinqToDB.PostgreSQL.Tools.ttinclude" #>
-<# //@ include file="$(ProjectDir)LinqToDB.Templates\PluralizationService.ttinclude"      #>
+<#@ template language="C#" debug="True" hostSpecific="True" #>
+<#@ output extension=".generated.cs"                        #>
+
+<#@ include file="$(LinqToDBT4PostgreSQLTemplatesPath)LinqToDB.PostgreSQL.Tools.ttinclude" once="true" #>
+<#@ include file="$(LinqToDBT4PostgreSQLTemplatesPath)PluralizationService.ttinclude"      once="true" #>
 <#
 	/*
 		1. Create new *.tt file (e.g. MyDatabase.tt) in a folder where you would like to generate your data model

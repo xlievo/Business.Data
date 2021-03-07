@@ -8,8 +8,10 @@
 #pragma warning disable 1591
 
 using System;
+using System.Linq;
 
 using LinqToDB;
+using LinqToDB.Configuration;
 using LinqToDB.Mapping;
 
 namespace DataModel
@@ -21,6 +23,9 @@ namespace DataModel
 	/// </summary>
 	public partial class Connection : LinqToDB.LinqToDBConnection
 	{
+		/// <summary>
+		/// ddd
+		/// </summary>
 		public ITable<dd> dd { get { return this.GetTable<dd>(); } }
 
 		partial void InitMappingSchema()
@@ -40,15 +45,44 @@ namespace DataModel
 			InitMappingSchema();
 		}
 
+		public Connection(LinqToDbConnectionOptions options)
+			: base(options)
+		{
+			InitDataContext();
+			InitMappingSchema();
+		}
+
 		partial void InitDataContext  ();
 		partial void InitMappingSchema();
 	}
 
+	/// <summary>
+	/// ddd
+	/// </summary>
 	[Table(Schema="public", Name="dd")]
 	public partial class dd
 	{
-		[Column("dd"), Nullable] public string ddColumn { get; set; } // character varying(255)
-		[Column(),     Nullable] public string dd2      { get; set; } // character varying(255)
+		/// <summary>
+		/// ddd
+		/// </summary>
+		[Column("dd"),    Nullable         ] public string ddColumn { get; set; } // character varying(255)
+		/// <summary>
+		/// ddd2
+		/// </summary>
+		[Column(),        Nullable         ] public string dd2      { get; set; } // character varying(255)
+		/// <summary>
+		/// key
+		/// </summary>
+		[Column(),     PrimaryKey,  NotNull] public string gid      { get; set; } // character varying(32)
+	}
+
+	public static partial class TableExtensions
+	{
+		public static dd Find(this ITable<dd> table, string gid)
+		{
+			return table.FirstOrDefault(t =>
+				t.gid == gid);
+		}
 	}
 }
 

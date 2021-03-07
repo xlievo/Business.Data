@@ -23,7 +23,7 @@ namespace test
             {
                 options.AddPolicy("any", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
-            services.AddMvc(option => option.EnableEndpointRouting = false)
+            services.AddControllers(option => option.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
         }
 

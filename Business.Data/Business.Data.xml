@@ -4,9 +4,387 @@
         <name>Business.Data</name>
     </assembly>
     <members>
+        <member name="T:Business.Data.DataBase`1">
+            <summary>
+            DataBase
+            </summary>
+            <typeparam name="Connection"></typeparam>
+        </member>
+        <member name="M:Business.Data.DataBase`1.GetConnection(System.String)">
+            <summary>
+            GetConnection
+            </summary>
+            <param name="callMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Business.Data.DataBase`1.Business#Data#IData#GetConnection(System.String)">
+            <summary>
+            GetConnection
+            </summary>
+            <param name="callMethod"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Business.Data.IData">
+            <summary>
+            IData
+            </summary>
+        </member>
+        <member name="M:Business.Data.IData.GetConnection(System.String)">
+            <summary>
+            GetConnection
+            </summary>
+            <param name="callMethod"></param>
+            <returns></returns>
+        </member>
         <member name="T:LinqToDB.LinqToDBConnection">
             <summary>
             the a LinqToDBConnection
+            </summary>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor">
+            <summary>
+            LinqToDBConnection
+            </summary>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor(System.String)">
+            <summary>
+            LinqToDBConnection
+            </summary>
+            <param name="configuration"></param>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor(System.String,System.String)">
+            <summary>
+            LinqToDBConnection
+            </summary>
+            <param name="providerName"></param>
+            <param name="connectionString"></param>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor(LinqToDB.DataProvider.IDataProvider,System.String)">
+            <summary>
+            LinqToDBConnection
+            </summary>
+            <param name="provider"></param>
+            <param name="conString"></param>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor(LinqToDB.Configuration.LinqToDbConnectionOptions)">
+            <summary>
+            LinqToDBConnection
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="P:LinqToDB.LinqToDBConnection.TraceMethod">
+            <summary>
+            TraceMethod
+            </summary>
+        </member>
+        <member name="P:LinqToDB.LinqToDBConnection.TraceId">
+            <summary>
+            TraceId
+            </summary>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.Insert``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Performs bulk insert operation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.InsertAsync``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Asynchronously performs bulk insert operation.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.Update``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Updates record in table, identified by T mapping class, using values from obj parameter. Record to update identified by match on primary key value from obj value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.UpdateAsync``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Asynchronously updates record in table, identified by T mapping class, using values from obj parameter. Record to update identified by match on primary key value from obj value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.InsertOrReplace``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String,System.String,LinqToDB.TableOptions)">
+            <summary>
+            Inserts new record into table, identified by T mapping class, using values from obj parameter or update existing record, identified by match on primary key value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <param name="tableName"></param>
+            <param name="databaseName"></param>
+            <param name="schemaName"></param>
+            <param name="serverName"></param>
+            <param name="tableOptions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.LinqToDBConnection.InsertOrReplaceAsync``1(System.Collections.Generic.IEnumerable{``0},System.String,System.String,System.String,System.String,LinqToDB.TableOptions,System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously inserts new record into table, identified by T mapping class, using values from obj parameter or update existing record, identified by match on primary key value.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <param name="tableName"></param>
+            <param name="databaseName"></param>
+            <param name="schemaName"></param>
+            <param name="serverName"></param>
+            <param name="tableOptions"></param>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="T:LinqToDB.Paging`1">
+            <summary>
+            Paging
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:LinqToDB.Paging`1.#ctor(System.Collections.Generic.List{`0},System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Paging
+            </summary>
+            <param name="data"></param>
+            <param name="length"></param>
+            <param name="currentPage"></param>
+            <param name="count"></param>
+            <param name="countPage"></param>
+        </member>
+        <member name="M:LinqToDB.Paging`1.#ctor(System.Collections.Generic.List{`0})">
+            <summary>
+            Paging
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="P:LinqToDB.Paging`1.Data">
+            <summary>
+            Data
+            </summary>
+        </member>
+        <member name="P:LinqToDB.Paging`1.Length">
+            <summary>
+            Length
+            </summary>
+        </member>
+        <member name="P:LinqToDB.Paging`1.CurrentPage">
+            <summary>
+            CurrentPage
+            </summary>
+        </member>
+        <member name="P:LinqToDB.Paging`1.Count">
+            <summary>
+            Count
+            </summary>
+        </member>
+        <member name="P:LinqToDB.Paging`1.CountPage">
+            <summary>
+            CountPage
+            </summary>
+        </member>
+        <member name="T:LinqToDB.PagingInfo">
+            <summary>
+            PagingInfo
+            </summary>
+        </member>
+        <member name="M:LinqToDB.PagingInfo.#ctor(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            PagingInfo
+            </summary>
+            <param name="skip"></param>
+            <param name="take"></param>
+            <param name="currentPage"></param>
+            <param name="countPage"></param>
+        </member>
+        <member name="P:LinqToDB.PagingInfo.Skip">
+            <summary>
+            Skip
+            </summary>
+        </member>
+        <member name="P:LinqToDB.PagingInfo.Take">
+            <summary>
+            Take
+            </summary>
+        </member>
+        <member name="P:LinqToDB.PagingInfo.CurrentPage">
+            <summary>
+            CurrentPage
+            </summary>
+        </member>
+        <member name="P:LinqToDB.PagingInfo.CountPage">
+            <summary>
+            CountPage
+            </summary>
+        </member>
+        <member name="T:LinqToDB.Order">
+            <summary>
+            Order
+            </summary>
+        </member>
+        <member name="F:LinqToDB.Order.Ascending">
+            <summary>
+            Ascending
+            </summary>
+        </member>
+        <member name="F:LinqToDB.Order.Descending">
+            <summary>
+            Descending
+            </summary>
+        </member>
+        <member name="T:LinqToDB.DataConnectionEx">
+            <summary>
+            DataConnectionEx
+            </summary>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.SkipRandom``1(System.Linq.IQueryable{``0},System.Int32)">
+            <summary>
+            SkipRandom
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="query"></param>
+            <param name="take"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.SkipRandomAsync``1(System.Linq.IQueryable{``0},System.Int32)">
+            <summary>
+            SkipRandom
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="query"></param>
+            <param name="take"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.AsTable``1(System.Linq.IQueryable{``0})">
+            <summary>
+            AsTable
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="queryable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingInfo(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            GetPaging
+            </summary>
+            <param name="count"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPaging``1(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            GetPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingAsync``1(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            GetPagingAsync
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderBy``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32)">
+            <summary>
+            GetPagingOrderBy
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="keySelector"></param>
+            <param name="order"></param>
+            <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderByAsync``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32)">
+            <summary>
+            GetPagingOrderByAsync
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="keySelector"></param>
+            <param name="order"></param>
+            <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.List{``0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            ToPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <param name="currentPage"></param>
+            <param name="count"></param>
+            <param name="countPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.List{``0},LinqToDB.Paging{``0})">
+            <summary>
+            ToPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <param name="pagingObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            ToPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <param name="currentPage"></param>
+            <param name="count"></param>
+            <param name="countPage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.IEnumerable{``0},LinqToDB.Paging{``0})">
+            <summary>
+            ToPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="data"></param>
+            <param name="pagingObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.Contains``1(``0,``0[])">
+            <summary>
+            Contains
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="val"></param>
+            <param name="col"></param>
+            <returns></returns>
+        </member>
+        <member name="T:LinqToDB.ConnectionStringSettings">
+            <summary>
+            ConnectionStringSettings
+            </summary>
+        </member>
+        <member name="P:LinqToDB.ConnectionStringSettings.ConnectionString">
+            <summary>
+            ConnectionString
             </summary>
         </member>
         <member name="P:LinqToDB.ConnectionStringSettings.Name">
@@ -17,6 +395,11 @@
         <member name="P:LinqToDB.ConnectionStringSettings.ProviderName">
             <summary>
             LinqToDB.ProviderName
+            </summary>
+        </member>
+        <member name="P:LinqToDB.ConnectionStringSettings.IsGlobal">
+            <summary>
+            IsGlobal
             </summary>
         </member>
         <member name="T:LinqToDB.LinqToDBSection">
@@ -31,6 +414,11 @@
             <param name="connectionStringSettings"></param>
             <param name="defaultConfiguration"></param>
         </member>
+        <member name="P:LinqToDB.LinqToDBSection.DataProviders">
+            <summary>
+            DataProviders
+            </summary>
+        </member>
         <member name="P:LinqToDB.LinqToDBSection.DefaultConfiguration">
             <summary>
             Key
@@ -39,6 +427,11 @@
         <member name="P:LinqToDB.LinqToDBSection.DefaultDataProvider">
             <summary>
             LinqToDB.ProviderName
+            </summary>
+        </member>
+        <member name="P:LinqToDB.LinqToDBSection.ConnectionStrings">
+            <summary>
+            ConnectionStrings
             </summary>
         </member>
     </members>
