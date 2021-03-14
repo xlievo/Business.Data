@@ -2,7 +2,6 @@
 using Business.Core;
 using Business.Core.Result;
 using LinqToDB;
-using LinqToDB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,10 +36,37 @@ namespace test
             public string B { get; set; }
         }
 
+        /// <summary>
+        /// dd2
+        /// </summary>
+        public class dd2
+        {
+            public dd2(string ddColumn, string[] dd3, string gid)
+            {
+                this.ddColumn = ddColumn;
+                this.dd3 = dd3;
+                this.gid = gid;
+            }
+
+            /// <summary>
+            /// ddColumn
+            /// </summary>
+            public string ddColumn { get; set; }
+            /// <summary>
+            /// dd3
+            /// </summary>
+            public string[] dd3 { get; set; }
+
+            /// <summary>
+            /// dd3
+            /// </summary>
+            public string gid { get; set; }
+        }
+
         //My first business logic
         //Logical method must be public virtual!
         //If you customize the base class, you just need to concentrate on writing logical methods!
-        public virtual async Task<dynamic> MyLogic(Token token, MyLogicArg arg)
+        public virtual async ValueTask<IResult<Paging<dd2>>> MyLogic(Token token, MyLogicArg arg)
         {
             using var con = DataBase.DB.GetConnection();
 
@@ -94,16 +120,28 @@ namespace test
 
             //var FilteredCount = Sql.Ext.Count().Over().ToValue();
 
-            var data2 = await con.dd.GetPagingAsync(1, 300);
+            con.dd.Where(c => c.dd3.Contains("sss")).GetPaging(1, 300);
 
-            //foreach (var item in data2.Data)
-            //{
-            //    item.dd2 = "333";
-            //}
+            var data2 = await con.dd.Where(c => c.dd3.Contains("sss")).Select(c => new dd2(c.ddColumn, c.dd3, c.gid)).GetPagingAsync(1, 300);
 
-            con.CommitTransaction();
+            data2.ToPaging(data2.Data);
+            //var data3 = data2.To<Paging<dd2>>();
 
-            return this.ResultCreate(dd);
+            foreach (var item in data2.Data)
+            {
+                item.ddColumn = "333";
+            }
+
+            await con.CommitTransactionAsync();
+
+            return this.ResultCreate(data2);
         }
+
+       
+    }
+
+    public static class Ex
+    {
+        public static ValueTask<Paging<T>> GetPagingAsync<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => query.GetPagingAsync<T, Paging<T>>(currentPage, pageSize, pageSizeMax);
     }
 }

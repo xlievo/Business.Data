@@ -65,15 +65,16 @@ namespace DataModel
 		/// <summary>
 		/// ddd
 		/// </summary>
-		[Column("dd"),    Nullable         ] public string ddColumn { get; set; } // character varying(255)
+		[Column("dd"),    Nullable         ] public string   ddColumn { get; set; } // character varying(255)
 		/// <summary>
 		/// ddd2
 		/// </summary>
-		[Column(),        Nullable         ] public string dd2      { get; set; } // character varying(255)
+		[Column(),        Nullable         ] public string   dd2      { get; set; } // character varying(255)
 		/// <summary>
 		/// key
 		/// </summary>
-		[Column(),     PrimaryKey,  NotNull] public string gid      { get; set; } // character varying(32)
+		[Column(),     PrimaryKey,  NotNull] public string   gid      { get; set; } // character varying(32)
+		[Column(),        Nullable         ] public string[] dd3      { get; set; } // text[]
 	}
 
 	public static partial class TableExtensions

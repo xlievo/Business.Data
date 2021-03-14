@@ -17,12 +17,12 @@
 
 namespace LinqToDB
 {
-    using System.Linq;
-    using System.Collections.Generic;
-    using LinqToDB.DataProvider;
     using LinqToDB.Data;
-    using System.Threading.Tasks;
+    using LinqToDB.DataProvider;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// the a LinqToDBConnection
@@ -253,72 +253,67 @@ namespace LinqToDB
 
     #region Paging Object
 
-    //public interface IPaging
-    //{
-    //    dynamic Data { get; }
+    /// <summary>
+    /// IPaging
+    /// </summary>
+    public interface IPaging<T>
+    {
+        /// <summary>
+        /// Get paging data for
+        /// </summary>
+        List<T> Data { get; set; }
 
-    //    int Length { get; }
+        /// <summary>
+        /// The length of the obtained paging data
+        /// </summary>
+        int Length { get; set; }
 
-    //    int CurrentPage { get; }
+        /// <summary>
+        /// The current paging index is determined by paging calculation
+        /// </summary>
+        int CurrentPage { get; set; }
 
-    //    int Count { get; }
+        /// <summary>
+        /// Total records
+        /// </summary>
+        int Count { get; set; }
 
-    //    int CountPage { get; }
-    //}
+        /// <summary>
+        /// Total pages
+        /// </summary>
+        int CountPage { get; set; }
+    }
 
     /// <summary>
     /// Paging
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct Paging<T>
+    public struct Paging<T> : IPaging<T>
     {
         /// <summary>
-        /// Paging
+        /// Get paging data for
         /// </summary>
-        /// <param name="data"></param>
-        /// <param name="length"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="count"></param>
-        /// <param name="countPage"></param>
-        public Paging(List<T> data, int length, int currentPage, int count, int countPage)
-        {
-            Data = data;
-            Length = length;
-            CurrentPage = currentPage;
-            Count = count;
-            CountPage = countPage;
-        }
+        public List<T> Data { get; set; }
 
         /// <summary>
-        /// Paging
+        /// The length of the obtained paging data
         /// </summary>
-        /// <param name="data"></param>
-        public Paging(List<T> data) : this() => Data = data;
+        public int Length { get; set; }
 
         /// <summary>
-        /// Data
+        /// The current paging index is determined by paging calculation
         /// </summary>
-        public List<T> Data { get; }
+        public int CurrentPage { get; set; }
 
         /// <summary>
-        /// Length
+        /// Total records
         /// </summary>
-        public int Length { get; }
+        public int Count { get; set; }
 
         /// <summary>
-        /// CurrentPage
+        /// Total pages
         /// </summary>
-        public int CurrentPage { get; }
-
-        /// <summary>
-        /// Count
-        /// </summary>
-        public int Count { get; }
-
-        /// <summary>
-        /// CountPage
-        /// </summary>
-        public int CountPage { get; }
+        public int CountPage { get; set; }
     }
 
     /// <summary>
@@ -551,18 +546,41 @@ namespace LinqToDB
         /// <param name="pageSize"></param>
         /// <param name="pageSizeMax"></param>
         /// <returns></returns>
-        public static Paging<T> GetPaging<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50)
+        public static Paging<T> GetPaging<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => GetPaging<T, Paging<T>>(query, currentPage, pageSize, pageSizeMax);
+
+        /// <summary>
+        /// GetPaging
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        public static Paging GetPaging<T, Paging>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50, Paging paging = default)
+            where Paging : IPaging<T>, new()
         {
             if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
 
             var count = query.Count();
-            if (0 == count) { return new Paging<T>(new List<T>()); }
+
+            if (Equals(null, paging))
+            {
+                paging = new Paging();
+            }
+
+            if (0 == count) { paging.Data = new List<T>(); paging.Length = paging.Data.Count; return paging; }
 
             var p = GetPagingInfo(count, currentPage, pageSize, pageSizeMax);
 
-            var data = query.Skip(p.Skip).Take(p.Take).ToList();
-
-            return new Paging<T>(data, data.Count, p.CurrentPage, count, p.CountPage);
+            paging.Data = query.Skip(p.Skip).Take(p.Take).ToList();
+            paging.Length = paging.Data.Count;
+            paging.CurrentPage = p.CurrentPage;
+            paging.Count = count;
+            paging.CountPage = p.CountPage;
+            return paging;
         }
 
         /// <summary>
@@ -574,18 +592,41 @@ namespace LinqToDB
         /// <param name="pageSize"></param>
         /// <param name="pageSizeMax"></param>
         /// <returns></returns>
-        public static async ValueTask<Paging<T>> GetPagingAsync<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50)
+        public static ValueTask<Paging<T>> GetPagingAsync<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => GetPagingAsync<T, Paging<T>>(query, currentPage, pageSize, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        public static async ValueTask<Paging> GetPagingAsync<T, Paging>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50, Paging paging = default)
+            where Paging : IPaging<T>, new()
         {
             if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
 
             var count = await query.CountAsync();
-            if (0 == count) { return new Paging<T>(new List<T>()); }
+
+            if (Equals(null, paging))
+            {
+                paging = new Paging();
+            }
+
+            if (0 == count) { paging.Data = new List<T>(); paging.Length = paging.Data.Count; return paging; }
 
             var p = GetPagingInfo(count, currentPage, pageSize, pageSizeMax);
 
-            var data = await query.Skip(p.Skip).Take(p.Take).ToListAsync();
-
-            return new Paging<T>(data, data.Count, p.CurrentPage, count, p.CountPage);
+            paging.Data = await query.Skip(p.Skip).Take(p.Take).ToListAsync();
+            paging.Length = paging.Data.Count;
+            paging.CurrentPage = p.CurrentPage;
+            paging.Count = count;
+            paging.CountPage = p.CountPage;
+            return paging;
         }
 
         /// <summary>
@@ -596,16 +637,39 @@ namespace LinqToDB
         /// <param name="query"></param>
         /// <param name="currentPage"></param>
         /// <param name="pageSize"></param>
-        /// <param name="keySelector"></param>
+        /// <param name="keySelector">A function to extract a key from an element.</param>
         /// <param name="order"></param>
         /// <param name="pageSizeMax"></param>
         /// <returns></returns>
-        public static Paging<T> GetPagingOrderBy<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50)
+        public static Paging<T> GetPagingOrderBy<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50) => GetPagingOrderBy<T, TKey, Paging<T>>(query, currentPage, pageSize, keySelector, order, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingOrderBy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keySelector">A function to extract a key from an element.</param>
+        /// <param name="order"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        public static Paging GetPagingOrderBy<T, TKey, Paging>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50, Paging paging = default)
+            where Paging : IPaging<T>, new()
         {
             if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
 
             var count = query.Count();
-            if (0 == count) { return new Paging<T>(new List<T>()); }
+
+            if (Equals(null, paging))
+            {
+                paging = new Paging();
+            }
+
+            if (0 == count) { paging.Data = new List<T>(); paging.Length = paging.Data.Count; return paging; }
 
             var p = GetPagingInfo(count, currentPage, pageSize, pageSizeMax);
 
@@ -621,7 +685,12 @@ namespace LinqToDB
                     break;
             }
 
-            return new Paging<T>(data, data.Count, p.CurrentPage, count, p.CountPage);
+            paging.Data = data;
+            paging.Length = data.Count;
+            paging.CurrentPage = p.CurrentPage;
+            paging.Count = count;
+            paging.CountPage = p.CountPage;
+            return paging;
         }
 
         /// <summary>
@@ -632,16 +701,40 @@ namespace LinqToDB
         /// <param name="query"></param>
         /// <param name="currentPage"></param>
         /// <param name="pageSize"></param>
-        /// <param name="keySelector"></param>
+        /// <param name="keySelector">A function to extract a key from an element.</param>
         /// <param name="order"></param>
         /// <param name="pageSizeMax"></param>
         /// <returns></returns>
-        public static async ValueTask<Paging<T>> GetPagingOrderByAsync<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50)
+        public static ValueTask<Paging<T>> GetPagingOrderByAsync<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50) => GetPagingOrderByAsync<T, TKey, Paging<T>>(query, currentPage, pageSize, keySelector, order, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingOrderByAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keySelector">A function to extract a key from an element.</param>
+        /// <param name="order"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        public static async ValueTask<Paging> GetPagingOrderByAsync<T, TKey, Paging>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50, Paging paging = default)
+            where Paging : IPaging<T>, new()
         {
             if (null == query) { throw new System.ArgumentNullException(nameof(query)); }
+            if (null == keySelector) { throw new System.ArgumentNullException(nameof(keySelector)); }
 
             var count = await query.CountAsync();
-            if (0 == count) { return new Paging<T>(new List<T>()); }
+
+            if (Equals(null, paging))
+            {
+                paging = new Paging();
+            }
+
+            if (0 == count) { paging.Data = new List<T>(); paging.Length = paging.Data.Count; return paging; }
 
             var p = GetPagingInfo(count, currentPage, pageSize, pageSizeMax);
 
@@ -657,82 +750,61 @@ namespace LinqToDB
                     break;
             }
 
-            return new Paging<T>(data, data.Count, p.CurrentPage, count, p.CountPage);
+            paging.Data = data;
+            paging.Length = data.Count;
+            paging.CurrentPage = p.CurrentPage;
+            paging.Count = count;
+            paging.CountPage = p.CountPage;
+            return paging;
         }
 
         /// <summary>
         /// ToPaging
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="paging"></param>
         /// <param name="data"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="count"></param>
-        /// <param name="countPage"></param>
         /// <returns></returns>
-        public static Paging<T> ToPaging<T>(this List<T> data, int currentPage = 0, int count = 0, int countPage = 0)
+        public static Paging ToPaging<T, Paging>(this IPaging<T> paging, IEnumerable<T> data)
+            where Paging : IPaging<T>, new()
         {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            return new Paging<T>(data, data.Count, currentPage, count, countPage);
-        }
-
-        /// <summary>
-        /// ToPaging
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <param name="pagingObj"></param>
-        /// <returns></returns>
-        public static Paging<T> ToPaging<T>(this List<T> data, Paging<T> pagingObj)
-        {
-            if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
-
-            return new Paging<T>(data, data.Count, pagingObj.CurrentPage, pagingObj.Count, pagingObj.CountPage);
-        }
-
-        /// <summary>
-        /// ToPaging
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="count"></param>
-        /// <param name="countPage"></param>
-        /// <returns></returns>
-        public static Paging<T> ToPaging<T>(this IEnumerable<T> data, int currentPage = 0, int count = 0, int countPage = 0)
-        {
+            if (Equals(null, paging)) { throw new System.ArgumentNullException(nameof(paging)); }
             if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
 
             var data2 = data.ToList();
-            return new Paging<T>(data2, data2.Count, currentPage, count, countPage);
+            return new Paging { Data = data2, Length = data2.Count, CurrentPage = paging.CurrentPage, Count = paging.Count, CountPage = paging.CountPage };
         }
 
         /// <summary>
         /// ToPaging
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Paging"></typeparam>
+        /// <param name="paging"></param>
         /// <param name="data"></param>
-        /// <param name="pagingObj"></param>
         /// <returns></returns>
-        public static Paging<T> ToPaging<T>(this IEnumerable<T> data, Paging<T> pagingObj)
+        public static Paging ToPaging<T, Paging>(this Paging paging, IEnumerable<T> data)
+            where Paging : IPaging<T>, new()
         {
+            if (Equals(null, paging)) { throw new System.ArgumentNullException(nameof(paging)); }
             if (null == data) { throw new System.ArgumentNullException(nameof(data)); }
 
             var data2 = data.ToList();
-            return new Paging<T>(data2, data2.Count, pagingObj.CurrentPage, pagingObj.Count, pagingObj.CountPage);
+            return new Paging { Data = data2, Length = data2.Count, CurrentPage = paging.CurrentPage, Count = paging.Count, CountPage = paging.CountPage };
         }
 
         #endregion
 
         /// <summary>
-        /// Contains
+        /// Contains for PostgreSQL {1} = ANY({0})
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="val"></param>
         /// <param name="col"></param>
         /// <returns></returns>
-        [Sql.Expression(ProviderName.PostgreSQL, "{0} = ANY({1})")]
-        public static bool Contains<T>(this T val, T[] col) where T : System.IComparable => col.Contains(val);
+        [Sql.Expression(ProviderName.PostgreSQL, "{1} = ANY({0})")]
+        public static bool Contains<T>(this T[] col, T val) where T : System.IComparable => col.Contains(val);
     }
 
     #region Settings

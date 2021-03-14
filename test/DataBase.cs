@@ -1,7 +1,39 @@
-﻿using System.Linq;
+﻿using Business.AspNet;
 using Microsoft.Extensions.Configuration;
-using Business.Core.Utils;
-using Business.AspNet;
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+/// Paging
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public struct Paging<T> : LinqToDB.IPaging<T>
+{
+    /// <summary>
+    /// Data
+    /// </summary>
+    public List<T> Data { get; set; }
+
+    /// <summary>
+    /// Length2
+    /// </summary>
+    public int Length { get; set; }
+
+    /// <summary>
+    /// CurrentPage2
+    /// </summary>
+    public int CurrentPage { get; set; }
+
+    /// <summary>
+    /// Count2
+    /// </summary>
+    public int Count { get; set; }
+
+    /// <summary>
+    /// CountPage2
+    /// </summary>
+    public int CountPage { get; set; }
+}
 
 public class DataBase : Business.Data.DataBase<DataModel.Connection>
 {
@@ -35,7 +67,7 @@ public class DataBase : Business.Data.DataBase<DataModel.Connection>
 
     readonly string configuration;
 
-    public DataBase(string configuration = null) => this.configuration = configuration;
+    public DataBase(string configuration = null) : base() => this.configuration = configuration;
 
     public override DataModel.Connection GetConnection([System.Runtime.CompilerServices.CallerMemberName] string callMethod = null) => new DataModel.Connection(this.configuration ?? LinqToDB.Data.DataConnection.DefaultSettings.DefaultConfiguration) { TraceMethod = callMethod };
 }

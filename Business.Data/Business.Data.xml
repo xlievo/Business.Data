@@ -141,51 +141,65 @@
             <param name="token"></param>
             <returns></returns>
         </member>
+        <member name="T:LinqToDB.IPaging`1">
+            <summary>
+            IPaging
+            </summary>
+        </member>
+        <member name="P:LinqToDB.IPaging`1.Data">
+            <summary>
+            Get paging data for
+            </summary>
+        </member>
+        <member name="P:LinqToDB.IPaging`1.Length">
+            <summary>
+            The length of the obtained paging data
+            </summary>
+        </member>
+        <member name="P:LinqToDB.IPaging`1.CurrentPage">
+            <summary>
+            The current paging index is determined by paging calculation
+            </summary>
+        </member>
+        <member name="P:LinqToDB.IPaging`1.Count">
+            <summary>
+            Total records
+            </summary>
+        </member>
+        <member name="P:LinqToDB.IPaging`1.CountPage">
+            <summary>
+            Total pages
+            </summary>
+        </member>
         <member name="T:LinqToDB.Paging`1">
             <summary>
             Paging
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:LinqToDB.Paging`1.#ctor(System.Collections.Generic.List{`0},System.Int32,System.Int32,System.Int32,System.Int32)">
-            <summary>
-            Paging
-            </summary>
-            <param name="data"></param>
-            <param name="length"></param>
-            <param name="currentPage"></param>
-            <param name="count"></param>
-            <param name="countPage"></param>
-        </member>
-        <member name="M:LinqToDB.Paging`1.#ctor(System.Collections.Generic.List{`0})">
-            <summary>
-            Paging
-            </summary>
-            <param name="data"></param>
-        </member>
         <member name="P:LinqToDB.Paging`1.Data">
             <summary>
-            Data
+            Get paging data for
             </summary>
         </member>
         <member name="P:LinqToDB.Paging`1.Length">
             <summary>
-            Length
+            The length of the obtained paging data
             </summary>
         </member>
         <member name="P:LinqToDB.Paging`1.CurrentPage">
             <summary>
-            CurrentPage
+            The current paging index is determined by paging calculation
             </summary>
         </member>
         <member name="P:LinqToDB.Paging`1.Count">
             <summary>
-            Count
+            Total records
             </summary>
         </member>
         <member name="P:LinqToDB.Paging`1.CountPage">
             <summary>
-            CountPage
+            Total pages
             </summary>
         </member>
         <member name="T:LinqToDB.PagingInfo">
@@ -289,6 +303,19 @@
             <param name="pageSizeMax"></param>
             <returns></returns>
         </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPaging``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Int32,``1)">
+            <summary>
+            GetPaging
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="pageSizeMax"></param>
+            <param name="paging"></param>
+            <returns></returns>
+        </member>
         <member name="M:LinqToDB.DataConnectionEx.GetPagingAsync``1(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Int32)">
             <summary>
             GetPagingAsync
@@ -300,6 +327,19 @@
             <param name="pageSizeMax"></param>
             <returns></returns>
         </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingAsync``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Int32,``1)">
+            <summary>
+            GetPagingAsync
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="pageSizeMax"></param>
+            <param name="paging"></param>
+            <returns></returns>
+        </member>
         <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderBy``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32)">
             <summary>
             GetPagingOrderBy
@@ -309,9 +349,25 @@
             <param name="query"></param>
             <param name="currentPage"></param>
             <param name="pageSize"></param>
-            <param name="keySelector"></param>
+            <param name="keySelector">A function to extract a key from an element.</param>
             <param name="order"></param>
             <param name="pageSizeMax"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderBy``3(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32,``2)">
+            <summary>
+            GetPagingOrderBy
+            </summary>
+            <typeparam name="T"></typeparam>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="query"></param>
+            <param name="currentPage"></param>
+            <param name="pageSize"></param>
+            <param name="keySelector">A function to extract a key from an element.</param>
+            <param name="order"></param>
+            <param name="pageSizeMax"></param>
+            <param name="paging"></param>
             <returns></returns>
         </member>
         <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderByAsync``2(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32)">
@@ -323,54 +379,50 @@
             <param name="query"></param>
             <param name="currentPage"></param>
             <param name="pageSize"></param>
-            <param name="keySelector"></param>
+            <param name="keySelector">A function to extract a key from an element.</param>
             <param name="order"></param>
             <param name="pageSizeMax"></param>
             <returns></returns>
         </member>
-        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.List{``0},System.Int32,System.Int32,System.Int32)">
+        <member name="M:LinqToDB.DataConnectionEx.GetPagingOrderByAsync``3(System.Linq.IQueryable{``0},System.Int32,System.Int32,System.Linq.Expressions.Expression{System.Func{``0,``1}},LinqToDB.Order,System.Int32,``2)">
             <summary>
-            ToPaging
+            GetPagingOrderByAsync
             </summary>
             <typeparam name="T"></typeparam>
-            <param name="data"></param>
+            <typeparam name="TKey"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="query"></param>
             <param name="currentPage"></param>
-            <param name="count"></param>
-            <param name="countPage"></param>
+            <param name="pageSize"></param>
+            <param name="keySelector">A function to extract a key from an element.</param>
+            <param name="order"></param>
+            <param name="pageSizeMax"></param>
+            <param name="paging"></param>
             <returns></returns>
         </member>
-        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.List{``0},LinqToDB.Paging{``0})">
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``2(LinqToDB.IPaging{``0},System.Collections.Generic.IEnumerable{``0})">
             <summary>
             ToPaging
             </summary>
             <typeparam name="T"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="paging"></param>
             <param name="data"></param>
-            <param name="pagingObj"></param>
             <returns></returns>
         </member>
-        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Int32)">
+        <member name="M:LinqToDB.DataConnectionEx.ToPaging``2(``1,System.Collections.Generic.IEnumerable{``0})">
             <summary>
             ToPaging
             </summary>
             <typeparam name="T"></typeparam>
+            <typeparam name="Paging"></typeparam>
+            <param name="paging"></param>
             <param name="data"></param>
-            <param name="currentPage"></param>
-            <param name="count"></param>
-            <param name="countPage"></param>
             <returns></returns>
         </member>
-        <member name="M:LinqToDB.DataConnectionEx.ToPaging``1(System.Collections.Generic.IEnumerable{``0},LinqToDB.Paging{``0})">
+        <member name="M:LinqToDB.DataConnectionEx.Contains``1(``0[],``0)">
             <summary>
-            ToPaging
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="data"></param>
-            <param name="pagingObj"></param>
-            <returns></returns>
-        </member>
-        <member name="M:LinqToDB.DataConnectionEx.Contains``1(``0,``0[])">
-            <summary>
-            Contains
+            Contains for PostgreSQL {1} = ANY({0})
             </summary>
             <typeparam name="T"></typeparam>
             <param name="val"></param>

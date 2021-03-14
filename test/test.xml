@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>test</name>
+    </assembly>
+    <members>
+        <member name="T:DataModel.Connection">
+            <summary>
+            Database       : dd
+            Data Source    : tcp://192.168.1.121:5920
+            Server Version : 10.11
+            </summary>
+        </member>
+        <member name="P:DataModel.Connection.dd">
+            <summary>
+            ddd
+            </summary>
+        </member>
+        <member name="T:DataModel.dd">
+            <summary>
+            ddd
+            </summary>
+        </member>
+        <member name="P:DataModel.dd.ddColumn">
+            <summary>
+            ddd
+            </summary>
+        </member>
+        <member name="P:DataModel.dd.dd2">
+            <summary>
+            ddd2
+            </summary>
+        </member>
+        <member name="P:DataModel.dd.gid">
+            <summary>
+            key
+            </summary>
+        </member>
+        <member name="T:Paging`1">
+            <summary>
+            Paging
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Paging`1.Data">
+            <summary>
+            Data
+            </summary>
+        </member>
+        <member name="P:Paging`1.Length">
+            <summary>
+            Length2
+            </summary>
+        </member>
+        <member name="P:Paging`1.CurrentPage">
+            <summary>
+            CurrentPage2
+            </summary>
+        </member>
+        <member name="P:Paging`1.Count">
+            <summary>
+            Count2
+            </summary>
+        </member>
+        <member name="P:Paging`1.CountPage">
+            <summary>
+            CountPage2
+            </summary>
+        </member>
+        <member name="T:test.MyBusiness.MyLogicArg">
+            <summary>
+            MyLogicArg!
+            </summary>
+        </member>
+        <member name="P:test.MyBusiness.MyLogicArg.A">
+            <summary>
+            AAA
+            </summary>
+        </member>
+        <member name="P:test.MyBusiness.MyLogicArg.B">
+            <summary>
+            BBB
+            </summary>
+        </member>
+        <member name="T:test.MyBusiness.dd2">
+            <summary>
+            dd2
+            </summary>
+        </member>
+        <member name="P:test.MyBusiness.dd2.ddColumn">
+            <summary>
+            ddColumn
+            </summary>
+        </member>
+        <member name="P:test.MyBusiness.dd2.dd3">
+            <summary>
+            dd3
+            </summary>
+        </member>
+        <member name="P:test.MyBusiness.dd2.gid">
+            <summary>
+            dd3
+            </summary>
+        </member>
+    </members>
+</doc>

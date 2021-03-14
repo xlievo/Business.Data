@@ -4,8 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Source\Repos\Business.Data\test\test.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Business.AspNet" Version="0.9.3" />
+    <PackageReference Include="Business.AspNet" Version="0.9.3.1" />
     <PackageReference Include="linq2db.PostgreSQL" Version="3.2.3" />
   </ItemGroup>
 
