@@ -139,9 +139,4 @@ namespace test
 
        
     }
-
-    public static class Ex
-    {
-        public static ValueTask<Paging<T>> GetPagingAsync<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => query.GetPagingAsync<T, Paging<T>>(currentPage, pageSize, pageSizeMax);
-    }
 }
