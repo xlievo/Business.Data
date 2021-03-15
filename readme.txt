@@ -26,7 +26,46 @@ Thanks for downloading this Business.Lib package.
 	
 	d:=====================Definition=====================
 
-	public class DataBase : Business.Data.DataBase<DataModel.Connection>
+	using Business.AspNet;
+    using LinqToDB;
+    using Microsoft.Extensions.Configuration;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Paging
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public struct Paging<T> : IPaging<T>
+    {
+        /// <summary>
+        /// Get paging data for
+        /// </summary>
+        public List<T> Data { get; set; }
+
+        /// <summary>
+        /// The length of the obtained paging data
+        /// </summary>
+        public int Length { get; set; }
+
+        /// <summary>
+        /// The current paging index is determined by paging calculation
+        /// </summary>
+        public int CurrentPage { get; set; }
+
+        /// <summary>
+        /// Total records
+        /// </summary>
+        public int Count { get; set; }
+
+        /// <summary>
+        /// Total pages
+        /// </summary>
+        public int CountPage { get; set; }
+    }
+
+    public class DataBase : Business.Data.DataBase<DataModel.Connection>
     {
         public static readonly DataBase DB = new DataBase();//master
 
@@ -35,9 +74,8 @@ Thanks for downloading this Business.Lib package.
         static DataBase()
         {
             //Initialize the database
-            LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDB.LinqToDBSection(Common.Host.AppSettings.GetSection("ConnectionStrings").GetChildren().Select(c => new LinqToDB.ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
+            LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDBSection(Utils.Hosting.Config.GetSection("AppSettings").GetSection("ConnectionStrings").GetChildren().Select(c => new ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
 
-            LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
             LinqToDB.Data.DataConnection.TurnTraceSwitchOn();
             LinqToDB.Data.DataConnection.OnTrace = c =>
             {
@@ -45,14 +83,14 @@ Thanks for downloading this Business.Lib package.
                 {
                     if (c.TraceInfoStep == LinqToDB.Data.TraceInfoStep.Error)
                     {
-                        c.Exception?.Console();
+                        c.Exception?.Log();
                     }
                     return;
                 }
 
-                var con = c.DataConnection as LinqToDB.LinqToDBConnection;
+                //var con = c.DataConnection as LinqToDB.LinqToDBConnection;
 
-                System.Console.WriteLine($"{c.StartTime}{con?.TraceMethod}:{con?.TraceId}{System.Environment.NewLine}{c.SqlText}{System.Environment.NewLine}{c.ExecutionTime}");
+                //System.Console.WriteLine($"{c.StartTime}{con?.TraceMethod}:{con?.TraceId}{System.Environment.NewLine}{c.SqlText}{System.Environment.NewLine}{c.ExecutionTime}");
             };
         }
 
@@ -60,6 +98,62 @@ Thanks for downloading this Business.Lib package.
 
         public DataBase(string configuration = null) => this.configuration = configuration;
 
-        public override DataModel.Connection GetConnection([CallerMemberName] string callMethod = null) => new DataModel.Connection(this.configuration ?? LinqToDB.Data.DataConnection.DefaultSettings.DefaultConfiguration) { TraceMethod = callMethod };
+        public override DataModel.Connection GetConnection([System.Runtime.CompilerServices.CallerMemberName] string callMethod = null) => new DataModel.Connection(this.configuration ?? LinqToDB.Data.DataConnection.DefaultSettings.DefaultConfiguration) { TraceMethod = callMethod };
+    }
+
+    /// <summary>
+    /// Extensions
+    /// </summary>
+    public static class Extensions
+    {
+        /// <summary>
+        /// GetPaging
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <returns></returns>
+        public static Paging<T> GetPaging<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => query.GetPaging<T, Paging<T>>(currentPage, pageSize, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <returns></returns>
+        public static ValueTask<Paging<T>> GetPagingAsync<T>(this IQueryable<T> query, int currentPage, int pageSize, int pageSizeMax = 50) => query.GetPagingAsync<T, Paging<T>>(currentPage, pageSize, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingOrderBy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keySelector"></param>
+        /// <param name="order"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <returns></returns>
+        public static Paging<T> GetPagingOrderBy<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50) => query.GetPagingOrderBy<T, TKey, Paging<T>>(currentPage, pageSize, keySelector, order, pageSizeMax);
+
+        /// <summary>
+        /// GetPagingOrderByAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="currentPage"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="keySelector"></param>
+        /// <param name="order"></param>
+        /// <param name="pageSizeMax"></param>
+        /// <returns></returns>
+        public static ValueTask<Paging<T>> GetPagingOrderByAsync<T, TKey>(this IQueryable<T> query, int currentPage, int pageSize, System.Linq.Expressions.Expression<System.Func<T, TKey>> keySelector, Order order = Order.Ascending, int pageSizeMax = 50) => query.GetPagingOrderByAsync<T, TKey, Paging<T>>(currentPage, pageSize, keySelector, order, pageSizeMax);
     }
 	
