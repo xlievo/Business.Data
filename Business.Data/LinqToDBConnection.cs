@@ -678,10 +678,10 @@ namespace LinqToDB
             switch (order)
             {
                 case Order.Ascending:
-                    data = query.Skip(p.Skip).Take(p.Take).OrderBy(keySelector).ToList();
+                    data = query.OrderBy(keySelector).Skip(p.Skip).Take(p.Take).ToList();
                     break;
                 case Order.Descending:
-                    data = query.Skip(p.Skip).Take(p.Take).OrderByDescending(keySelector).ToList();
+                    data = query.OrderByDescending(keySelector).Skip(p.Skip).Take(p.Take).ToList();
                     break;
             }
 
@@ -743,10 +743,10 @@ namespace LinqToDB
             switch (order)
             {
                 case Order.Ascending:
-                    data = await query.Skip(p.Skip).Take(p.Take).OrderBy(keySelector).ToListAsync();
+                    data = await query.OrderBy(keySelector).Skip(p.Skip).Take(p.Take).ToListAsync();
                     break;
                 case Order.Descending:
-                    data = await query.Skip(p.Skip).Take(p.Take).OrderByDescending(keySelector).ToListAsync();
+                    data = await query.OrderByDescending(keySelector).Skip(p.Skip).Take(p.Take).ToListAsync();
                     break;
             }
 
