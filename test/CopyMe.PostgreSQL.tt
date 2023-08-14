@@ -48,7 +48,7 @@
 
 	// to configure GetSchemaOptions properties, add them here, before load metadata call
 
-	LoadPostgreSQLMetadata("192.168.1.121", "5920", "dd", "root", "123456");
+	LoadPostgreSQLMetadata("localhost", "5920", "dd", "root", "123456");
 //	LoadPostgreSQLMetadata(string connectionString);
 
 	// to adjust loaded database model before generation, add your code here, after load metadata, but before GenerateModel() call

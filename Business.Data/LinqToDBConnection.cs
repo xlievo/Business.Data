@@ -104,7 +104,13 @@ namespace LinqToDB
         /// LinqToDBConnection
         /// </summary>
         /// <param name="options"></param>
-        public LinqToDBConnection(Configuration.LinqToDbConnectionOptions options) : base(options) { }
+        public LinqToDBConnection(DataOptions options) : base(options) { }
+
+        ///// <summary>
+        ///// LinqToDBConnection
+        ///// </summary>
+        ///// <param name="options"></param>
+        //public LinqToDBConnection(Configuration.LinqToDbConnectionOptions options) : base(options) { }
 
         /// <summary>
         /// TraceMethod

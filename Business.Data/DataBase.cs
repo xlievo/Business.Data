@@ -116,7 +116,7 @@ namespace Business.Data
     public abstract class DataBase<Connection> : IData
         where Connection : LinqToDBConnection
     {
-        static DataBase() => LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
+        //static DataBase() => LinqToDB.Common.Configuration.Linq.AllowMultipleQuery = true;
 
         /// <summary>
         /// GetConnection

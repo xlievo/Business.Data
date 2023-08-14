@@ -5,7 +5,7 @@
 // </auto-generated>
 //---------------------------------------------------------------------------------------------------
 
-#pragma warning disable 1591
+#pragma warning disable 1573, 1591
 
 using System;
 using System.Linq;
@@ -18,14 +18,11 @@ namespace DataModel
 {
 	/// <summary>
 	/// Database       : dd
-	/// Data Source    : tcp://192.168.1.121:5920
-	/// Server Version : 10.11
+	/// Data Source    : tcp://localhost:5920
+	/// Server Version : 15.4
 	/// </summary>
 	public partial class Connection : LinqToDB.LinqToDBConnection
 	{
-		/// <summary>
-		/// ddd
-		/// </summary>
 		public ITable<dd> dd { get { return this.GetTable<dd>(); } }
 
 		partial void InitMappingSchema()
@@ -45,8 +42,15 @@ namespace DataModel
 			InitMappingSchema();
 		}
 
-		public Connection(LinqToDbConnectionOptions options)
+		public Connection(DataOptions options)
 			: base(options)
+		{
+			InitDataContext();
+			InitMappingSchema();
+		}
+
+		public Connection(DataOptions<Connection> options)
+			: base(options.Options)
 		{
 			InitDataContext();
 			InitMappingSchema();
@@ -56,25 +60,13 @@ namespace DataModel
 		partial void InitMappingSchema();
 	}
 
-	/// <summary>
-	/// ddd
-	/// </summary>
 	[Table(Schema="public", Name="dd")]
 	public partial class dd
 	{
-		/// <summary>
-		/// ddd
-		/// </summary>
-		[Column("dd"),    Nullable         ] public string   ddColumn { get; set; } // character varying(255)
-		/// <summary>
-		/// ddd2
-		/// </summary>
-		[Column(),        Nullable         ] public string   dd2      { get; set; } // character varying(255)
-		/// <summary>
-		/// key
-		/// </summary>
-		[Column(),     PrimaryKey,  NotNull] public string   gid      { get; set; } // character varying(32)
-		[Column(),        Nullable         ] public string[] dd3      { get; set; } // text[]
+		[PrimaryKey, NotNull    ] public string   gid      { get; set; } // text
+		[Column,        Nullable] public string   dd2      { get; set; } // text
+		[Column,        Nullable] public string   ddColumn { get; set; } // text
+		[Column,        Nullable] public string[] dd3      { get; set; } // text[]
 	}
 
 	public static partial class TableExtensions
@@ -86,5 +78,3 @@ namespace DataModel
 		}
 	}
 }
-
-#pragma warning restore 1591

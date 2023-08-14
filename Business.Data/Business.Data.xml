@@ -66,7 +66,7 @@
             <param name="provider"></param>
             <param name="conString"></param>
         </member>
-        <member name="M:LinqToDB.LinqToDBConnection.#ctor(LinqToDB.Configuration.LinqToDbConnectionOptions)">
+        <member name="M:LinqToDB.LinqToDBConnection.#ctor(LinqToDB.DataOptions)">
             <summary>
             LinqToDBConnection
             </summary>

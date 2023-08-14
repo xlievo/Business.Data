@@ -2,6 +2,7 @@
 using Business.Core;
 using Business.Core.Result;
 using LinqToDB;
+using LinqToDB.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,12 +77,13 @@ namespace test
 
             var dd = await con.dd.ToListAsync();
 
-            var data = new DataModel.dd { gid = System.Guid.NewGuid().ToString("N"), dd2 = "ssss", ddColumn = "22222" };
+            var data = new DataModel.dd { gid = System.Guid.NewGuid().ToString("N"), dd2 = "ssss", ddColumn = "22222", dd3 = new string[] { "sss", "xxx" } };
 
             var list = new List<DataModel.dd>();
 
             list.Add(data);
 
+            con.dd.BulkCopy(list);
             //con.dd.InsertOrUpdate(list as ITable<DataModel.dd>);
 
             //con.dd.Insert(list as ITable<DataModel.dd>, c => c.dd2);
@@ -96,9 +98,9 @@ namespace test
             //    item.ddColumn = "888888";
             //}
 
-            dd[0].dd2 = "wwwwwww";
+            //dd[0].dd2 = "wwwwwww";
 
-            await con.UpdateAsync(dd[0]);
+            //await con.UpdateAsync(dd[0]);
             //dd[0].ddColumn = "33333";
             //con.BulkCopy(new BulkCopyOptions() {   }, dd);
             //con.dd.Update(c => dd[0]);
@@ -137,6 +139,6 @@ namespace test
             return this.ResultCreate(data2);
         }
 
-       
+
     }
 }

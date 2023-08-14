@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
-    <Version>1.2.9.1</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.3.0.1</Version>
     <Company>www.tmopen.com</Company>
     <Authors>xlievo</Authors>
     <Description>https://github.com/xlievo/Business.Data</Description>
-    <Copyright>Copyright ©  2014~2021 Business Project - http://www.tmopen.com</Copyright>
+    <Copyright>Copyright ©  2014~2023 Business Project - http://www.tmopen.com</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
     <PackageProjectUrl>https://github.com/xlievo/Business.Data</PackageProjectUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>1.2.9.1</AssemblyVersion>
+    <AssemblyVersion>1.3.0.1</AssemblyVersion>
     <RepositoryUrl>https://github.com/xlievo/Business.Data</RepositoryUrl>
     <PackageTags>Business.Data</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -39,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="linq2db" Version="3.2.3" />
+    <PackageReference Include="linq2db" Version="5.2.2" />
   </ItemGroup>
 
 </Project>

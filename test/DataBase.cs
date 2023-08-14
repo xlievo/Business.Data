@@ -49,7 +49,7 @@ public class DataBase : Business.Data.DataBase<DataModel.Connection>
         LinqToDB.Data.DataConnection.DefaultSettings = new LinqToDBSection(Utils.Hosting.Config.GetSection("AppSettings").GetSection("ConnectionStrings").GetChildren().Select(c => new ConnectionStringSettings { Name = c.Key, ConnectionString = c.GetValue<string>("ConnectionString"), ProviderName = c.GetValue<string>("ProviderName") }));
 
         LinqToDB.Data.DataConnection.TurnTraceSwitchOn();
-        LinqToDB.Data.DataConnection.OnTrace = c =>
+        LinqToDB.Data.DataConnection.DefaultOnTraceConnection = c =>
         {
             if (c.TraceInfoStep != LinqToDB.Data.TraceInfoStep.Completed)
             {
